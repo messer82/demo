@@ -10,4 +10,6 @@ public interface TransactionRepository {
     List<Transaction> findByAccountId(int id);
 
     Transaction findById(int id);
+
+    Transaction save(Transaction transaction);
 }

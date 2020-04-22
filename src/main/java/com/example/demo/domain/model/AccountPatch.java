@@ -3,6 +3,7 @@ package com.example.demo.domain.model;
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;
+import java.math.BigDecimal;
 
 @Builder
 @Getter
@@ -13,7 +14,7 @@ import javax.validation.constraints.NotBlank;
 public class AccountPatch {
 
     @NotBlank
-    private double balance;
+    private BigDecimal balance;
 
     private int accountId;
 }

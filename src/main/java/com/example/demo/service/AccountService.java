@@ -32,10 +32,6 @@ public class AccountService {
         return accountRepository.save(account);
     }
 
-    public Account updateBalance(Account account, int id) {
-        return accountRepository.updateBalance(account, id);
-    }
-
     public Account updatePartialAccount(@Valid AccountPatch accountPatch) {
         Account account = accountRepository.findById(accountPatch.getAccountId());
         account.setBalance(accountPatch.getBalance());

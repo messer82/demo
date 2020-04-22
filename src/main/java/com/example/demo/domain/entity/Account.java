@@ -2,8 +2,8 @@ package com.example.demo.domain.entity;
 
 import lombok.*;
 
-import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotBlank;
+import java.math.BigDecimal;
 
 @Builder
 @Getter
@@ -18,5 +18,5 @@ public class Account {
     @NotBlank
     private String accountNumber;
     @NotBlank
-    private double balance;
+    private BigDecimal balance;
 }

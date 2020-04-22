@@ -5,6 +5,7 @@ import lombok.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Builder
@@ -22,7 +23,7 @@ public class Transaction {
     @NotBlank
     @Max(2000)
     @Min(1)
-    private double amount_paid;
+    private BigDecimal amount_paid;
     @NotBlank
     private LocalDate transaction_date;
 }

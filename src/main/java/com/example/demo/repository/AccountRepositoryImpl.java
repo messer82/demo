@@ -49,20 +49,13 @@ public class AccountRepositoryImpl implements AccountRepository {
         return findAll().stream().max(Comparator.comparing(Account::getAccount_id)).get();
     }
 
-    @Override
-    public Account updateBalance(Account account, int id) {
-        String sqlUpdate = "UPDATE accounts SET account_balance = ? WHERE account_id = ?";
-        jdbcTemplate.update(sqlUpdate, id);
-        return findById(id);
-    }
-
     private RowMapper<Account> getAccountRowMapper() {
         return ((rs, rowNum) -> {
             Account account = new Account();
             account.setAccount_id(rs.getInt("account_id"));
             account.setUser_id(rs.getInt("user_id"));
             account.setAccountNumber(rs.getString("account_no"));
-            account.setBalance(rs.getDouble("account_balance"));
+            account.setBalance(rs.getBigDecimal("account_balance"));
             return account;
         });
     }

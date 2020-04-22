@@ -4,11 +4,13 @@ import com.example.demo.domain.entity.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+@Component
 public class TransactionRepositoryImpl implements TransactionRepository {
 
     @Autowired
@@ -40,13 +42,25 @@ public class TransactionRepositoryImpl implements TransactionRepository {
         return jdbcTemplate.queryForObject(sqlQuery, getTransactionRowMapper(), id);
     }
 
+    @Override
+    public Transaction save(Transaction transaction) {
+        String sqlQuery = "INSERT INTO transactions account_id, destination_account, amount_paid, transaction_date VALUES (?, ?, ?, ?)";
+        Object[] params = new Object[]{
+                transaction.getAccount_id(),
+                transaction.getDestination_account(),
+                transaction.getAmount_paid(),
+                transaction.getTransaction_date()};
+                jdbcTemplate.update(sqlQuery, params);
+                return findAll().stream().max(Comparator.comparing(Transaction::getTransaction_id)).get();
+    }
+
     private RowMapper<Transaction> getTransactionRowMapper() {
         return ((rs, rowNum) -> {
             Transaction transaction = new Transaction();
             transaction.setTransaction_id(rs.getInt("transaction_id"));
             transaction.setAccount_id(rs.getInt("account_id"));
             transaction.setDestination_account(rs.getString("destination_account"));
-            transaction.setAmount_paid(rs.getDouble("amount_paid"));
+            transaction.setAmount_paid(rs.getBigDecimal("amount_paid"));
             transaction.setTransaction_date(rs.getDate("transaction_date").toLocalDate());
             return transaction;
         });
