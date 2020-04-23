@@ -9,7 +9,7 @@ import javax.sql.DataSource;
 public class DataConfig {
 
     @Bean
-    public DataSource mysqlDataSource() {
+    public DataSource postgresqlDataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("org.postgresql.Driver");
         dataSource.setUrl("jdbc:postgresql://localhost:5432/mobile_banking_transactions");

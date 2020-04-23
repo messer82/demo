@@ -1,6 +1,7 @@
 package com.example.demo.domain.entity;
 
 import lombok.*;
+import org.springframework.data.annotation.Id;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -13,6 +14,8 @@ import java.time.LocalDate;
 
 public class User {
 
+    @Id
+    @Generated
     private Integer user_id;
     @NotBlank
     private String userName;

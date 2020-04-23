@@ -4,13 +4,13 @@ import com.example.demo.domain.entity.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-@Component
+@Repository
 public class TransactionRepositoryImpl implements TransactionRepository {
 
     @Autowired
