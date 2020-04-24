@@ -4,6 +4,8 @@ import com.example.demo.domain.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collections;
@@ -48,7 +50,10 @@ public class UserRepositoryImpl implements UserRepository {
     public User save(User user) {
         String sqlUpdate = "INSERT INTO mobile_banking_users (user_name, email, birth_date) VALUES (?, ?, ?)";
 
-        Object[] params = new Object[] {user.getUserName(), user.getEmail(), user.getBirthDate()};
+        Object[] params = new Object[] {
+                user.getUserName(),
+                user.getEmail(),
+                user.getBirthDate()};
         jdbcTemplate.update(sqlUpdate, params);
         return findAll().stream().max(Comparator.comparing(User::getUser_id)).get();
     }

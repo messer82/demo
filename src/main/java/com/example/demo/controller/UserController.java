@@ -32,4 +32,14 @@ public class UserController {
     public User createUser(@RequestBody @Valid User user){
         return userService.createUser(user);
     }
+
+    @DeleteMapping
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteUser(int user_id) {userService.deleteUserById(user_id);}
+
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public User getUser(@PathVariable(name = "id") int user_id) {
+        return userService.getUserById(user_id);
+    }
 }

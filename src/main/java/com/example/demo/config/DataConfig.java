@@ -13,9 +13,8 @@ public class DataConfig {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("org.postgresql.Driver");
         dataSource.setUrl("jdbc:postgresql://localhost:5432/mobile_banking_transactions");
-        dataSource.setSchema("transactions_schema");
         dataSource.setUsername("postgres");
-        dataSource.setPassword("pishititza1986");
+        dataSource.setPassword("password");
 
         return dataSource;
     }

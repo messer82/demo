@@ -1,10 +1,10 @@
 package com.example.demo.domain.entity;
 
 import lombok.*;
-import org.springframework.data.annotation.Id;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 @Builder
 @Getter
@@ -14,14 +14,12 @@ import java.time.LocalDate;
 
 public class User {
 
-    @Id
-    @Generated
     private Integer user_id;
     @NotBlank
     private String userName;
     @NotBlank
     @Email
     private String email;
-    @NotBlank
+    @NotNull
     private LocalDate birthDate;
 }
