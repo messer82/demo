@@ -4,8 +4,7 @@ import com.example.demo.domain.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collections;
@@ -56,6 +55,25 @@ public class UserRepositoryImpl implements UserRepository {
                 user.getBirthDate()};
         jdbcTemplate.update(sqlUpdate, params);
         return findAll().stream().max(Comparator.comparing(User::getUser_id)).get();
+    }
+
+    @Override
+    public List<User> findUsersNamed(String name) {
+        String sqlQuery = "SELECT user_id, user_name, email, birth_date FROM mobile_banking_users WHERE user_name ILIKE ?";
+        RowMapper<User> userByNameRowMapper = getUserRowMapper();
+        List<User> usersByName = jdbcTemplate.query(sqlQuery, userByNameRowMapper,"%"+name+"%");
+        Collections.sort(usersByName, Comparator.comparing(User::getUser_id));
+
+        return usersByName;
+    }
+
+    @Override
+    public User update(int id, String user_name, String email) {
+        String sqlUpdate = "UPDATE mobile_banking_users SET user_name = ?, email = ? WHERE user_id = ?";
+
+        jdbcTemplate.update(sqlUpdate, user_name, email, id);
+
+        return findById(id);
     }
 
     private RowMapper<User> getUserRowMapper() {

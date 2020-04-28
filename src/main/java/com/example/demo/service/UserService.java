@@ -35,10 +35,18 @@ public class UserService {
         return userRepository.findByName(name);
     }
 
+    public List<User> getUsersNamed(String name) {
+        return userRepository.findUsersNamed(name);
+    }
+
+    public User updateUser(int id, String user_name, String email){
+        return userRepository.update(id, email, email);
+    }
+
     public User updatePartialUser(@Valid UserPatch userPatch) {
         User user = userRepository.findById(userPatch.getUserId());
         user.setUserName(userPatch.getUserName());
         user.setEmail(userPatch.getEmail());
-        return userRepository.save(user);
+        return userRepository.update(userPatch.getUserId(), userPatch.getUserName(), userPatch.getEmail());
     }
 }
