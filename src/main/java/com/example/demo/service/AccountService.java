@@ -35,6 +35,6 @@ public class AccountService {
     public Account updatePartialAccount(@Valid AccountPatch accountPatch) {
         Account account = accountRepository.findById(accountPatch.getAccountId());
         account.setBalance(accountPatch.getBalance());
-        return accountRepository.save(account);
+        return accountRepository.update(accountPatch.getAccountId(), accountPatch.getBalance());
     }
 }

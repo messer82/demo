@@ -3,8 +3,10 @@ package com.example.demo.controller;
 import com.example.demo.domain.entity.User;
 import com.example.demo.domain.model.UserPatch;
 import com.example.demo.exception.AgeValidationException;
+import com.example.demo.exception.UserNotFoundException;
 import com.example.demo.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,14 +41,24 @@ public class UserController {
         }
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{user_id}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteUser(int user_id) {userService.deleteUserById(user_id);}
+    public void deleteUser(@PathVariable(name = "user_id") int user_id) {
+        if (getUserById(user_id).getUser_id() > 0) {
+            userService.deleteUserById(user_id);
+        } else  {
+            throw new UserNotFoundException();
+        }
+    }
 
     @GetMapping("/user_id/{user_id}")
     @ResponseStatus(HttpStatus.OK)
     public User getUserById(@PathVariable(name = "user_id") int user_id) {
-        return userService.getUserById(user_id);
+        try {
+            return userService.getUserById(user_id);
+        } catch (EmptyResultDataAccessException exception) {
+            throw new UserNotFoundException("No user for this Id!");
+        }
     }
 
     @GetMapping("/user_name")
@@ -58,7 +70,11 @@ public class UserController {
     @GetMapping("/{user_name}")
     @ResponseStatus(HttpStatus.OK)
     public List<User> getUsersNamedLike(@PathVariable(name = "user_name") String name) {
-        return userService.getUsersNamed(name);
+        try {
+            return userService.getUsersNamed(name);
+        } catch (EmptyResultDataAccessException exception) {
+            throw new UserNotFoundException("No users for this name!");
+        }
     }
 
     @PatchMapping("/{user_id}")

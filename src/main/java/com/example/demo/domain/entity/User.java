@@ -18,7 +18,7 @@ public class User {
     @NotBlank
     private String userName;
     @NotBlank
-    @Email
+    @Email(message = "Invalid email address!")
     private String email;
     @NotNull
     private LocalDate birthDate;

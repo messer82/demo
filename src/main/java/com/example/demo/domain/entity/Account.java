@@ -3,6 +3,7 @@ package com.example.demo.domain.entity;
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 @Builder
@@ -17,6 +18,6 @@ public class Account {
     private int user_id;
     @NotBlank
     private String accountNumber;
-    @NotBlank
+    @NotNull
     private BigDecimal balance;
 }

@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -19,7 +20,7 @@ public class AccountRepositoryImpl implements AccountRepository {
     @Override
     public void deleteById(int id) {
         String deleteStatement = "DELETE FROM accounts WHERE account_id = ?";
-        int rowsDeleted = jdbcTemplate.update(deleteStatement);
+        int rowsDeleted = jdbcTemplate.update(deleteStatement, id);
     }
 
     @Override
@@ -33,7 +34,7 @@ public class AccountRepositoryImpl implements AccountRepository {
 
     @Override
     public Account findById(int id) {
-        String sqlQuery = "SELECT account_id, user_id, account_no, account_balance FROM account WHERE account_id = ?";
+        String sqlQuery = "SELECT account_id, user_id, account_no, account_balance FROM accounts WHERE account_id = ?";
         return jdbcTemplate.queryForObject(sqlQuery, getAccountRowMapper(), id);
     }
 
@@ -47,6 +48,15 @@ public class AccountRepositoryImpl implements AccountRepository {
             account.getBalance()};
         jdbcTemplate.update(sqlQuery, params);
         return findAll().stream().max(Comparator.comparing(Account::getAccount_id)).get();
+    }
+
+    @Override
+    public Account update(int id, BigDecimal balance) {
+        String sqlUpdate = "UPDATE accounts SET account_balance = ? WHERE account_id = ?";
+
+        jdbcTemplate.update(sqlUpdate, balance, id);
+
+        return findById(id);
     }
 
     private RowMapper<Account> getAccountRowMapper() {

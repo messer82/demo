@@ -2,6 +2,7 @@ package com.example.demo.repository;
 
 import com.example.demo.domain.entity.Account;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface AccountRepository {
@@ -13,4 +14,5 @@ public interface AccountRepository {
 
     Account save(Account account);
 
+    Account update(int id, BigDecimal balance);
 }
