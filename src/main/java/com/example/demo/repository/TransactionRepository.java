@@ -2,6 +2,8 @@ package com.example.demo.repository;
 
 import com.example.demo.domain.entity.Transaction;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 public interface TransactionRepository {
@@ -12,4 +14,8 @@ public interface TransactionRepository {
     Transaction findById(int id);
 
     Transaction save(Transaction transaction);
+
+//    Transaction update(int id, BigDecimal amount, LocalDate date);
+
+    void deleteById(int id);
 }

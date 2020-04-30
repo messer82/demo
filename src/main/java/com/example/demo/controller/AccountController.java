@@ -11,12 +11,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.io.IOException;
-import java.security.AccessControlException;
-import java.sql.SQLDataException;
-import java.sql.SQLException;
 import java.util.List;
 
 @RequiredArgsConstructor
