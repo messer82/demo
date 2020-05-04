@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.domain.entity.Account;
+import com.example.demo.domain.entity.Transaction;
 import com.example.demo.domain.model.AccountPatch;
 import com.example.demo.exception.AccountNotFoundException;
 import com.example.demo.exception.UserNotFoundException;
@@ -37,13 +38,23 @@ public class AccountController {
         return accountService.getAccounts();
     }
 
-    @GetMapping("/{account_id}")
+    @GetMapping("/account_id/{account_id}")
     @ResponseStatus(HttpStatus.OK)
-    public Account getAccountById(@PathVariable(name = "account_id") int id) {
+    public Account getAccountById(@PathVariable(name = "account_id") int account_id) {
         try {
-            return accountService.getAccountById(id);
+            return accountService.getAccountById(account_id);
         } catch (EmptyResultDataAccessException exception) {
             throw new AccountNotFoundException("No account for this Id!");
+        }
+    }
+
+    @GetMapping("/{account_no}")
+    @ResponseStatus(HttpStatus.OK)
+        public Account getAccountByAccountNumber(@PathVariable(name = "account_no") String account_no) {
+        try {
+            return accountService.getAccountByAccountNumber(account_no);
+        } catch (EmptyResultDataAccessException exception) {
+            throw new AccountNotFoundException("No account for this account number!");
         }
     }
 
@@ -59,9 +70,9 @@ public class AccountController {
 
     @PatchMapping("/{account_id}")
     @ResponseStatus(HttpStatus.CREATED)
-    public Account updateAccount(@PathVariable int account_id,@RequestBody AccountPatch accountPatch) {
+    public Account updateAccount(@PathVariable int account_id, @RequestBody AccountPatch accountPatch) {
         accountPatch.setAccountId(account_id);
-        return accountService.updatePartialAccount(accountPatch);
+        return accountService.updateAccountBalance(accountPatch);
     }
 
 }

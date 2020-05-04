@@ -7,8 +7,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 @Builder
 @Getter
@@ -25,6 +24,8 @@ public class Transaction {
     @NotNull
     @Max(2000)
     @Min(1)
-    private BigDecimal amount_paid;
-    private LocalDate transaction_date;
+    private BigDecimal amount;
+    @NotBlank
+    private String transaction_type;
+    private Timestamp transaction_date;
 }

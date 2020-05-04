@@ -12,7 +12,9 @@ public interface AccountRepository {
 
     Account findById(int id);
 
+    Account findByAccountNumber(String accountNumber);
+
     Account save(Account account);
 
-    Account update(int id, BigDecimal balance);
+    Account update(int account_id, BigDecimal balance);
 }

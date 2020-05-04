@@ -2,8 +2,6 @@ package com.example.demo.repository;
 
 import com.example.demo.domain.entity.Transaction;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
 
 public interface TransactionRepository {

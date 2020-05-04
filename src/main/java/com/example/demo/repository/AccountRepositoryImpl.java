@@ -1,7 +1,9 @@
 package com.example.demo.repository;
 
 import com.example.demo.domain.entity.Account;
+import com.example.demo.exception.AccountNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -36,6 +38,12 @@ public class AccountRepositoryImpl implements AccountRepository {
     public Account findById(int id) {
         String sqlQuery = "SELECT account_id, user_id, account_no, account_balance FROM accounts WHERE account_id = ?";
         return jdbcTemplate.queryForObject(sqlQuery, getAccountRowMapper(), id);
+    }
+
+    @Override
+    public Account findByAccountNumber(String accountNumber) {
+        String sqlQuery = "SELECT account_id, user_id, account_no, account_balance FROM accounts WHERE account_no = ?";
+        return jdbcTemplate.queryForObject(sqlQuery, getAccountRowMapper(), accountNumber);
     }
 
     @Override
