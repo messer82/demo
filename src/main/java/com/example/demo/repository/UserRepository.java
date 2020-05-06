@@ -18,5 +18,5 @@ public interface UserRepository {
 
     User save(User user);
 
-    User update(int id, String user_name, String email);
+    User update(int id, String userName, String email);
 }

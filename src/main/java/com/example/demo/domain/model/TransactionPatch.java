@@ -20,8 +20,6 @@ public class TransactionPatch {
     @Max(2000)
     @Min(1)
     private BigDecimal amount;
-//    @NotBlank
-//    private Timestamp transaction_date;
 
-    private int transaction_id;
+    private int transactionId;
 }

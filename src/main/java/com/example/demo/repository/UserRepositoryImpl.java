@@ -4,11 +4,8 @@ import com.example.demo.domain.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.stereotype.Repository;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -30,7 +27,7 @@ public class UserRepositoryImpl implements UserRepository {
         String sqlQuery = "SELECT user_id, user_name, email, birth_date FROM mobile_banking_users";
         RowMapper<User> userRowMapper = getUserRowMapper();
         List<User> users = jdbcTemplate.query(sqlQuery, userRowMapper);
-        Collections.sort(users, Comparator.comparing(User::getUser_id));
+        Collections.sort(users, Comparator.comparing(User::getUserId));
 
         return users;
     }
@@ -56,7 +53,7 @@ public class UserRepositoryImpl implements UserRepository {
                 user.getEmail(),
                 user.getBirthDate()};
         jdbcTemplate.update(sqlUpdate, params);
-        return findAll().stream().max(Comparator.comparing(User::getUser_id)).get();
+        return findAll().stream().max(Comparator.comparing(User::getUserId)).get();
     }
 
     @Override
@@ -64,16 +61,16 @@ public class UserRepositoryImpl implements UserRepository {
         String sqlQuery = "SELECT user_id, user_name, email, birth_date FROM mobile_banking_users WHERE user_name ILIKE ?";
         RowMapper<User> userByNameRowMapper = getUserRowMapper();
         List<User> usersByName = jdbcTemplate.query(sqlQuery, userByNameRowMapper,"%"+name+"%");
-        Collections.sort(usersByName, Comparator.comparing(User::getUser_id));
+        Collections.sort(usersByName, Comparator.comparing(User::getUserId));
 
         return usersByName;
     }
 
     @Override
-    public User update(int id, String user_name, String email) {
+    public User update(int id, String userName, String email) {
         String sqlUpdate = "UPDATE mobile_banking_users SET user_name = ?, email = ? WHERE user_id = ?";
 
-        jdbcTemplate.update(sqlUpdate, user_name, email, id);
+        jdbcTemplate.update(sqlUpdate, userName, email, id);
 
         return findById(id);
     }
@@ -81,7 +78,7 @@ public class UserRepositoryImpl implements UserRepository {
     private RowMapper<User> getUserRowMapper() {
         return ((rs, rowNum) -> {
             User user = new User();
-            user.setUser_id(rs.getInt("user_id"));
+            user.setUserId(rs.getInt("user_id"));
             user.setUserName(rs.getString("user_name"));
             user.setEmail(rs.getString("email"));
             user.setBirthDate(rs.getDate("birth_date").toLocalDate());

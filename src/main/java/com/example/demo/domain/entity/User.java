@@ -6,6 +6,8 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.Objects;
+
 @Builder
 @Getter
 @Setter
@@ -14,7 +16,7 @@ import java.time.LocalDate;
 
 public class User {
 
-    private Integer user_id;
+    private Integer userId;
     @NotBlank
     private String userName;
     @NotBlank
@@ -22,4 +24,20 @@ public class User {
     private String email;
     @NotNull
     private LocalDate birthDate;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(userId, user.userId) &&
+                Objects.equals(userName, user.userName) &&
+                Objects.equals(email, user.email) &&
+                Objects.equals(birthDate, user.birthDate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(userId, userName, email, birthDate);
+    }
 }

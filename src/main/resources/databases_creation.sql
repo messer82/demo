@@ -9,6 +9,6 @@ account_no varchar(24) UNIQUE , account_balance double precision);
 ALTER SEQUENCE accounts_account_id_seq START 1 INCREMENT 1;
 
 CREATE TABLE transactions (transaction_id SERIAL PRIMARY KEY , account_id int REFERENCES accounts(account_id),
-destination_account varchar (24), amount_paid double precision, transaction_type varchar (32) , transaction_date timestamp DEFAULT now());
+destination_account varchar (24), amount_paid double precision, transaction_date timestamp DEFAULT now());
 ALTER SEQUENCE transactions_transaction_id_seq START 1 INCREMENT 1;
 

@@ -1,14 +1,13 @@
 package com.example.demo.repository;
 
 import com.example.demo.domain.entity.Account;
-import com.example.demo.exception.AccountNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -30,7 +29,7 @@ public class AccountRepositoryImpl implements AccountRepository {
         String sqlQuery = "SELECT account_id, user_id, account_no, account_balance FROM accounts";
         RowMapper<Account> accountRowMapper = getAccountRowMapper();
         List<Account> accounts = jdbcTemplate.query(sqlQuery, accountRowMapper);
-        Collections.sort(accounts, Comparator.comparing(Account::getAccount_id));
+        Collections.sort(accounts, Comparator.comparing(Account::getAccountId));
         return accounts;
     }
 
@@ -47,15 +46,15 @@ public class AccountRepositoryImpl implements AccountRepository {
     }
 
     @Override
-    public Account save(Account account) {
+    public Account save(Account account) throws SQLException {
         String sqlQuery = "INSERT INTO accounts (user_id, account_no, account_balance) VALUES (?, ?, ?)";
 
         Object[] params = new Object[] {
-            account.getUser_id(),
+            account.getUserId(),
             account.getAccountNumber(),
             account.getBalance()};
         jdbcTemplate.update(sqlQuery, params);
-        return findAll().stream().max(Comparator.comparing(Account::getAccount_id)).get();
+        return findAll().stream().max(Comparator.comparing(Account::getAccountId)).get();
     }
 
     @Override
@@ -70,8 +69,8 @@ public class AccountRepositoryImpl implements AccountRepository {
     private RowMapper<Account> getAccountRowMapper() {
         return ((rs, rowNum) -> {
             Account account = new Account();
-            account.setAccount_id(rs.getInt("account_id"));
-            account.setUser_id(rs.getInt("user_id"));
+            account.setAccountId(rs.getInt("account_id"));
+            account.setUserId(rs.getInt("user_id"));
             account.setAccountNumber(rs.getString("account_no"));
             account.setBalance(rs.getBigDecimal("account_balance"));
             return account;
