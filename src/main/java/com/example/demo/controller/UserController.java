@@ -63,7 +63,7 @@ public class UserController {
 
     @PatchMapping("/{user_id}")
     @ResponseStatus(HttpStatus.CREATED)
-    public User updateUser(@PathVariable(name = "user_id") int userId, @RequestBody UserPatch userPatch) {
+    public User updateUser(@PathVariable(name = "user_id") int userId, @Valid @RequestBody UserPatch userPatch) {
         userPatch.setUserId(userId);
         return userService.updatePartialUser(userPatch);
     }
