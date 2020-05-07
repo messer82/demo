@@ -6,13 +6,17 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
@@ -36,12 +40,45 @@ public class UserRepositoryImplTest {
     @Test
     public void test_delete_by_id() {
 
-        when(userRepository.findById(user2.getUserId())).thenReturn(user2);
+        int userId = 5;
 
-        verify(userRepository, times(1)).deleteById(user2.getUserId());
+        userRepository.deleteById(userId);
 
-        userRepository.deleteById(user2.getUserId());
+        verify(jdbcTemplate).update(anyString(), eq(userId));
+    }
 
-        assertThat(jdbcTemplate.update(anyString(), user2.getUserId())).isEqualTo(0);
+    @Test
+    public void test_find_all() {
+        List<User> users = new ArrayList<>();
+        users.add(user1);
+        users.add(user2);
+
+        when(jdbcTemplate.query(anyString(), any(RowMapper.class))).thenReturn(users);
+
+        List<User> result = userRepository.findAll();
+
+        assertThat(result.size()).isEqualTo(2);
+        assertThat(result.get(0)).isEqualTo(user1);
+        assertThat(result.get(1)).isEqualTo(user2);
+    }
+
+    @Test
+    public void test_find_by_id() {
+
+        int userId = 7;
+
+        userRepository.findById(userId);
+
+        verify(jdbcTemplate).queryForObject(anyString(), any(RowMapper.class), eq(userId));
+    }
+
+    @Test
+    public void test_find_by_name() {
+
+        String userName = "George";
+
+        userRepository.findByName(userName);
+
+        verify(jdbcTemplate).queryForObject(anyString(), any(RowMapper.class), eq(userName));
     }
 }
