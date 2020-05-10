@@ -17,5 +17,5 @@ public interface AccountRepository {
 
     Account save(Account account) throws SQLException;
 
-    Account update(int accountId, BigDecimal balance);
+    Account updateAccount(int accountId, BigDecimal balance);
 }

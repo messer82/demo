@@ -30,6 +30,7 @@ public class UserService {
 
     public void deleteUserById(int id) {
         if (getUserById(id).getUserId() > 0) {
+//        if (id != 0) {
             userRepository.deleteById(id);
         } else {
             throw new UserNotFoundException();
@@ -71,9 +72,7 @@ public class UserService {
     public User updatePartialUser(@Valid UserPatch userPatch) {
         try {
             User user = userRepository.findById(userPatch.getUserId());
-            user.setUserName(userPatch.getUserName());
-            user.setEmail(userPatch.getEmail());
-            return userRepository.update(userPatch.getUserId(), userPatch.getUserName(), userPatch.getEmail());
+            return userRepository.updateUser(userPatch.getUserId(), userPatch.getUserName(), userPatch.getEmail());
         } catch (EmptyResultDataAccessException exception) {
             throw new UserNotFoundException("No valid user details for patch!");
         }

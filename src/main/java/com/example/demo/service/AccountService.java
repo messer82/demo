@@ -59,8 +59,8 @@ public class AccountService {
     public Account updateAccountBalance(@Valid AccountPatch accountPatch) {
         try{
         Account account = accountRepository.findById(accountPatch.getAccountId());
-        account.setBalance(accountPatch.getBalance());
-        return accountRepository.update(accountPatch.getAccountId(), accountPatch.getBalance());
+//        account.setBalance(accountPatch.getBalance());
+        return accountRepository.updateAccount(accountPatch.getAccountId(), accountPatch.getBalance());
         } catch (EmptyResultDataAccessException exception) {
             throw new AccountNotFoundException("No valid account details for patch!");
         }

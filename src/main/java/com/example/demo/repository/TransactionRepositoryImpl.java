@@ -49,11 +49,10 @@ public class TransactionRepositoryImpl implements TransactionRepository {
     public Transaction save(Transaction transaction) {
         try {
             String sqlQuery = "INSERT INTO transactions (account_id, destination_account, amount) VALUES (?, ?, ?)";
-            Object[] params = new Object[]{
+            jdbcTemplate.update(sqlQuery,
                     transaction.getAccountId(),
                     transaction.getDestinationAccount(),
-                    transaction.getAmount()};
-            jdbcTemplate.update(sqlQuery, params);
+                    transaction.getAmount());
             return findAll().stream().max(Comparator.comparing(Transaction::getTransactionId)).get();
         } catch (DataIntegrityViolationException exception) {
             throw new AccountNotFoundException("Creation of transaction went wrong!");

@@ -49,16 +49,12 @@ public class AccountRepositoryImpl implements AccountRepository {
     public Account save(Account account) throws SQLException {
         String sqlQuery = "INSERT INTO accounts (user_id, account_no, account_balance) VALUES (?, ?, ?)";
 
-        Object[] params = new Object[] {
-            account.getUserId(),
-            account.getAccountNumber(),
-            account.getBalance()};
-        jdbcTemplate.update(sqlQuery, params);
+        jdbcTemplate.update(sqlQuery, account.getUserId(), account.getAccountNumber(), account.getBalance());
         return findAll().stream().max(Comparator.comparing(Account::getAccountId)).get();
     }
 
     @Override
-    public Account update(int id, BigDecimal balance) {
+    public Account updateAccount(int id, BigDecimal balance) {
         String sqlUpdate = "UPDATE accounts SET account_balance = ? WHERE account_id = ?";
 
         jdbcTemplate.update(sqlUpdate, balance, id);

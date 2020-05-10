@@ -31,10 +31,14 @@ public class UserRepositoryImplTest {
     @Mock
     private JdbcTemplate jdbcTemplate;
 
+    List<User> users = new ArrayList<>();
+
     @Before
     public void setup() {
         user1 = User.builder().userId(1).userName("John Doe").email("john.doe@gmail.com").birthDate(LocalDate.parse("2000-01-01")).build();
         user2 = User.builder().userId(2).userName("Jane Smith").email("jane.smith@gmail.com").birthDate(LocalDate.parse("2001-01-01")).build();
+        users.add(user1);
+        users.add(user2);
     }
 
     @Test
@@ -49,9 +53,6 @@ public class UserRepositoryImplTest {
 
     @Test
     public void test_find_all() {
-        List<User> users = new ArrayList<>();
-        users.add(user1);
-        users.add(user2);
 
         when(jdbcTemplate.query(anyString(), any(RowMapper.class))).thenReturn(users);
 
@@ -80,5 +81,41 @@ public class UserRepositoryImplTest {
         userRepository.findByName(userName);
 
         verify(jdbcTemplate).queryForObject(anyString(), any(RowMapper.class), eq(userName));
+    }
+
+    @Test
+    public void test_save() {
+
+        when(jdbcTemplate.query(anyString(), any(RowMapper.class))).thenReturn(users);
+
+        String john_doe = "John Doe";
+
+        String email = "john.doe@gmail.com";
+
+        user1 = User.builder().userId(1).userName(john_doe).email(email).birthDate(LocalDate.parse("2000-01-01")).build();
+
+        User userResponse = userRepository.save(user1);
+
+        verify(jdbcTemplate, times(1)).update(anyString(), anyString(), anyString(), any());
+
+        assertThat(userResponse).isEqualToComparingFieldByField(user2);
+    }
+
+    @Test
+    public void test_find_users_named() {
+
+        String name = "John";
+
+        userRepository.findUsersNamed(name);
+
+        verify(jdbcTemplate).query(anyString(), any(RowMapper.class), matches("%"+name+"%"));
+    }
+
+    @Test
+    public void test_update() {
+
+        userRepository.updateUser(user1.getUserId(), user1.getUserName(), user1.getEmail());
+
+        verify(jdbcTemplate).update(anyString(), anyString(), anyString(), anyInt());
     }
 }

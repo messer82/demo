@@ -48,11 +48,7 @@ public class UserRepositoryImpl implements UserRepository {
     public User save(User user) {
         String sqlUpdate = "INSERT INTO mobile_banking_users (user_name, email, birth_date) VALUES (?, ?, ?)";
 
-        Object[] params = new Object[] {
-                user.getUserName(),
-                user.getEmail(),
-                user.getBirthDate()};
-        jdbcTemplate.update(sqlUpdate, params);
+        jdbcTemplate.update(sqlUpdate, user.getUserName(), user.getEmail(), user.getBirthDate());
         return findAll().stream().max(Comparator.comparing(User::getUserId)).get();
     }
 
@@ -67,7 +63,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public User update(int id, String userName, String email) {
+    public User updateUser(int id, String userName, String email) {
         String sqlUpdate = "UPDATE mobile_banking_users SET user_name = ?, email = ? WHERE user_id = ?";
 
         jdbcTemplate.update(sqlUpdate, userName, email, id);
