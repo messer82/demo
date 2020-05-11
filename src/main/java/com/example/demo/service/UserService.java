@@ -30,7 +30,6 @@ public class UserService {
 
     public void deleteUserById(int id) {
         if (getUserById(id).getUserId() > 0) {
-//        if (id != 0) {
             userRepository.deleteById(id);
         } else {
             throw new UserNotFoundException();

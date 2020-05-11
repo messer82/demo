@@ -47,13 +47,6 @@ public class TransactionController {
         return transactionService.createTransaction(transaction);
     }
 
-    @PatchMapping("/{transaction_id}")
-    @ResponseStatus(HttpStatus.CREATED)
-    public Transaction makeRecurrentPayment(@PathVariable(name = "transaction_id") int transactionId, @RequestBody TransactionPatch transactionPatch) {
-        transactionPatch.setTransactionId(transactionId);
-        return transactionService.updatePartialTransaction(transactionPatch);
-    }
-
     @DeleteMapping("/{transaction_id}")
     @ResponseStatus(HttpStatus.OK)
     public void deleteTransactionById(@PathVariable(name = "transaction_id") int transactionId) {

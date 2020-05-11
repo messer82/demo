@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.domain.entity.Account;
 import com.example.demo.domain.entity.Transaction;
+import com.example.demo.domain.model.TransactionPatch;
 import com.example.demo.repository.AccountRepositoryImpl;
 import com.example.demo.repository.TransactionRepositoryImpl;
 import org.assertj.core.api.Assertions;
@@ -26,12 +27,10 @@ public class TransactionServiceTest {
 
     @InjectMocks
     private TransactionService transactionService;
-    @InjectMocks
+    @Mock
     private AccountService accountService;
     @Mock
     private TransactionRepositoryImpl transactionRepository;
-    @Mock
-    private AccountRepositoryImpl accountRepository;
 
     @Before
     public void setup() {
@@ -96,19 +95,11 @@ public class TransactionServiceTest {
                 transactionDate(LocalDateTime.parse("2020-01-02T09:10:10")).
                 build();
 
-        Mockito.when(transactionRepository.findById(transaction1.getAccountId())).thenReturn(transaction1);
-
-        Mockito.when(accountRepository.findById(transaction1.getAccountId())).thenReturn(account1);
-
-        accountService.getAccountById(transaction1.getAccountId()).getBalance();
-
-        Mockito.verify(accountRepository).findById(Mockito.eq(transaction1.getAccountId())).getBalance();
-
-//        Assertions.assertThat(accountService.getAccountById(transaction1.getAccountId()).getBalance()).isGreaterThanOrEqualTo(transaction1.getAmount());
+        Mockito.when(accountService.getAccountById(transaction1.getAccountId())).thenReturn(account1);
 
         transactionService.createTransaction(transaction1);
 
-//        Mockito.verify(transactionRepository).save(Mockito.eq(transaction1));
+        Mockito.verify(transactionRepository).save(Mockito.eq(transaction1));
     }
 
     @Test

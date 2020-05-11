@@ -94,15 +94,4 @@ public class TransactionService {
             throw new TransactionNotFoundException();
         }
     }
-
-    //for recurrent payments to the same account (e.g. utility bill payment)
-    public Transaction updatePartialTransaction(@Valid TransactionPatch transactionPatch) {
-        try {
-            Transaction transaction = transactionRepository.findById(transactionPatch.getTransactionId());
-            transaction.setAmount(transactionPatch.getAmount());
-            return transactionRepository.save(transaction);
-        } catch (EmptyResultDataAccessException exception) {
-            throw new TransactionNotFoundException("No valid transaction details for patch!");
-        }
-    }
 }
