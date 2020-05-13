@@ -35,8 +35,20 @@ public class UserRepositoryImplTest {
 
     @Before
     public void setup() {
-        user1 = User.builder().userId(1).userName("John Doe").email("john.doe@gmail.com").birthDate(LocalDate.parse("2000-01-01")).build();
-        user2 = User.builder().userId(2).userName("Jane Smith").email("jane.smith@gmail.com").birthDate(LocalDate.parse("2001-01-01")).build();
+        user1 = User.
+                builder().
+                userId(1).
+                userName("John Doe").
+                email("john.doe@gmail.com").
+                birthDate(LocalDate.parse("2000-01-01")).
+                build();
+        user2 = User.
+                builder().
+                userId(2).
+                userName("Jane Smith").
+                email("jane.smith@gmail.com").
+                birthDate(LocalDate.parse("2001-01-01")).
+                build();
         users.add(user1);
         users.add(user2);
     }
@@ -92,7 +104,13 @@ public class UserRepositoryImplTest {
 
         String email = "john.doe@gmail.com";
 
-        user1 = User.builder().userId(1).userName(john_doe).email(email).birthDate(LocalDate.parse("2000-01-01")).build();
+        user1 = User.
+                builder().
+                userId(1).
+                userName(john_doe).
+                email(email).
+                birthDate(LocalDate.parse("2000-01-01")).
+                build();
 
         User userResponse = userRepository.save(user1);
 

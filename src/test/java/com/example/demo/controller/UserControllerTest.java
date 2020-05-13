@@ -27,7 +27,13 @@ public class UserControllerTest {
 
     @Before
     public void setup() {
-        user = User.builder().userId(1).userName("John Doe").email("john.doe@gmail.com").birthDate(LocalDate.parse("2000-01-01")).build();
+        user = User.
+                builder().
+                userId(1).
+                userName("John Doe").
+                email("john.doe@gmail.com").
+                birthDate(LocalDate.parse("2000-01-01")).
+                build();
     }
 
     @Test
@@ -40,7 +46,13 @@ public class UserControllerTest {
     @Test
     public void test_create_user() {
 
-        user = User.builder().userId(1).userName("John Doe").email("john.doe@gmail.com").birthDate(LocalDate.parse("2000-01-01")).build();
+        user = User.
+                builder().
+                userId(1).
+                userName("John Doe").
+                email("john.doe@gmail.com").
+                birthDate(LocalDate.parse("2000-01-01")).
+                build();
 
         userController.createUser(user);
 
@@ -79,9 +91,20 @@ public class UserControllerTest {
 
     @Test
     public void test_update_user() {
-        user = User.builder().userId(1).userName("John Doe").email("john.doe@gmail.com").birthDate(LocalDate.parse("2000-01-01")).build();
+        user = User.
+                builder().
+                userId(1).
+                userName("John Doe").
+                email("john.doe@gmail.com").
+                birthDate(LocalDate.parse("2000-01-01")).
+                build();
 
-        UserPatch userPatch = UserPatch.builder().userId(1).userName("John Doe").email("john.doe@gmail.com").build();
+        UserPatch userPatch = UserPatch.
+                builder().
+                userId(1).
+                userName("John Doe").
+                email("john.doe@gmail.com").
+                build();
 
         userController.updateUser(user.getUserId(), userPatch);
 

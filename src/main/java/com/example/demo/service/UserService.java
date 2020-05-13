@@ -70,7 +70,6 @@ public class UserService {
 
     public User updatePartialUser(@Valid UserPatch userPatch) {
         try {
-            User user = userRepository.findById(userPatch.getUserId());
             return userRepository.updateUser(userPatch.getUserId(), userPatch.getUserName(), userPatch.getEmail());
         } catch (EmptyResultDataAccessException exception) {
             throw new UserNotFoundException("No valid user details for patch!");

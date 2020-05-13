@@ -1,7 +1,6 @@
 package com.example.demo.controller;
 
 import com.example.demo.domain.entity.Transaction;
-import com.example.demo.domain.model.TransactionPatch;
 import com.example.demo.exception.AmountTooLargeException;
 import com.example.demo.service.TransactionService;
 import lombok.RequiredArgsConstructor;

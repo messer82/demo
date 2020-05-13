@@ -13,9 +13,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,7 +56,8 @@ public class TransactionRepositoryImplTest {
 
     @Test
     public void test_find_all() {
-        Mockito.when(jdbcTemplate.query(Mockito.anyString(), Mockito.any(RowMapper.class))).thenReturn(transactions);
+        Mockito.when(jdbcTemplate.query(Mockito.anyString(), Mockito.any(RowMapper.class))).
+                thenReturn(transactions);
 
         List<Transaction> result = transactionRepository.findAll();
 
@@ -72,7 +71,8 @@ public class TransactionRepositoryImplTest {
 
         transactionRepository.findByAccountId(transaction1.getAccountId());
 
-        Mockito.verify(jdbcTemplate).query(Mockito.anyString(), Mockito.any(RowMapper.class), Mockito.eq(transaction1.getAccountId()));
+        Mockito.verify(jdbcTemplate).
+                query(Mockito.anyString(), Mockito.any(RowMapper.class), Mockito.eq(transaction1.getAccountId()));
     }
 
     @Test
@@ -86,7 +86,8 @@ public class TransactionRepositoryImplTest {
 
     @Test
     public void test_save() {
-        Mockito.when(jdbcTemplate.query(Mockito.anyString(), Mockito.any(RowMapper.class))).thenReturn(transactions);
+        Mockito.when(jdbcTemplate.query(Mockito.anyString(), Mockito.any(RowMapper.class))).
+                thenReturn(transactions);
 
         transaction1 = Transaction.
                 builder().
@@ -99,7 +100,8 @@ public class TransactionRepositoryImplTest {
 
         Transaction response = transactionRepository.save(transaction1);
 
-        Mockito.verify(jdbcTemplate).update(Mockito.anyString(), Mockito.anyInt(), Mockito.anyString(), Mockito.any());
+        Mockito.verify(jdbcTemplate).
+                update(Mockito.anyString(), Mockito.anyInt(), Mockito.anyString(), Mockito.any());
 
         Assertions.assertThat(response).isEqualToComparingFieldByField(transaction2);
     }

@@ -2,10 +2,13 @@ package com.example.demo.service;
 
 import com.example.demo.domain.entity.Account;
 import com.example.demo.domain.model.AccountPatch;
+import com.example.demo.exception.AccountNotFoundException;
 import com.example.demo.repository.AccountRepositoryImpl;
+import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -13,6 +16,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 @RunWith(MockitoJUnitRunner.class)
 
@@ -26,6 +31,8 @@ public class AccountServiceTest {
     @Mock
     private AccountRepositoryImpl accountRepository;
 
+    List<Account> accounts = new ArrayList<>();
+
     @Before
     public void setup() {
         account1 = Account.
@@ -34,6 +41,16 @@ public class AccountServiceTest {
                 userId(5).
                 accountNumber("RO454545").
                 balance(BigDecimal.valueOf(1234)).build();
+
+        account2 = Account.
+                builder().
+                accountId(2).
+                userId(6).
+                accountNumber("RO454789").
+                balance(BigDecimal.valueOf(1255)).build();
+
+        accounts.add(account1);
+        accounts.add(account2);
     }
 
     @Test
@@ -45,7 +62,9 @@ public class AccountServiceTest {
                 accountNumber("RO454545").
                 balance(BigDecimal.valueOf(1234)).build();
 
-        Mockito.when(accountRepository.findById(account1.getAccountId())).thenReturn(account1);
+        Mockito.when(accountRepository.findById(account1.getAccountId())).
+                thenReturn(account1).
+                thenThrow(AccountNotFoundException.class);
 
         accountService.deleteAccountById(account1.getAccountId());
 
@@ -54,7 +73,16 @@ public class AccountServiceTest {
 
     @Test
     public void test_get_accounts() {
-        accountService.getAccounts();
+
+        Mockito.when(accountRepository.findAll()).
+                thenReturn(accounts).
+                thenThrow(AccountNotFoundException.class);
+
+        List<Account> result = accountService.getAccounts();
+
+        Assertions.assertThat(result.size()).isEqualTo(2);
+        Assertions.assertThat(result.get(0)).isEqualToComparingFieldByField(account1);
+        Assertions.assertThat(result.get(1)).isEqualToComparingFieldByField(account2);
 
         Mockito.verify(accountRepository).findAll();
     }
@@ -63,7 +91,20 @@ public class AccountServiceTest {
     public void test_get_account_by_id() {
         int accountId = 15;
 
-        accountService.getAccountById(accountId);
+        account1 = Account.
+                builder().
+                accountId(1).
+                userId(5).
+                accountNumber("RO454545").
+                balance(BigDecimal.valueOf(1234)).build();
+
+        Mockito.when(accountRepository.findById(ArgumentMatchers.anyInt())).
+                thenReturn(account1).
+                thenThrow(AccountNotFoundException.class);
+
+        Account actualResult = accountService.getAccountById(accountId);
+
+        Assertions.assertThat(actualResult).isEqualToComparingFieldByField(account1);
 
         Mockito.verify(accountRepository).findById(Mockito.eq(accountId));
     }
@@ -72,7 +113,20 @@ public class AccountServiceTest {
     public void test_get_account_by_account_number() {
         String accountNumber = "RO6598";
 
-        accountService.getAccountByAccountNumber(accountNumber);
+        account1 = Account.
+                builder().
+                accountId(1).
+                userId(5).
+                accountNumber("RO454545").
+                balance(BigDecimal.valueOf(1234)).build();
+
+        Mockito.when(accountRepository.findByAccountNumber(ArgumentMatchers.anyString())).
+                thenReturn(account1).
+                thenThrow(AccountNotFoundException.class);
+
+        Account result = accountService.getAccountByAccountNumber(accountNumber);
+
+        Assertions.assertThat(result).isEqualToComparingFieldByField(account1);
 
         Mockito.verify(accountRepository).findByAccountNumber(Mockito.eq(accountNumber));
     }
@@ -86,7 +140,13 @@ public class AccountServiceTest {
                 accountNumber("RO454545").
                 balance(BigDecimal.valueOf(1234)).build();
 
-        accountService.createAccount(account1);
+        Mockito.when(accountRepository.save(ArgumentMatchers.any())).
+                thenReturn(account1).
+                thenThrow(SQLException.class);
+
+        Account result = accountService.createAccount(account1);
+
+        Assertions.assertThat(result).isEqualToComparingFieldByField(account1);
 
         Mockito.verify(accountRepository).save(Mockito.eq(account1));
     }

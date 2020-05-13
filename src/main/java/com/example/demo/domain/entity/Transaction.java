@@ -7,7 +7,6 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Objects;
 

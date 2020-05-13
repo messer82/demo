@@ -3,7 +3,6 @@ package com.example.demo.service;
 import com.example.demo.domain.entity.Account;
 import com.example.demo.domain.entity.Transaction;
 import com.example.demo.domain.model.AccountPatch;
-import com.example.demo.domain.model.TransactionPatch;
 import com.example.demo.exception.AccountNotFoundException;
 import com.example.demo.exception.AmountTooLargeException;
 import com.example.demo.exception.BalanceTooLowException;
@@ -13,7 +12,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
-import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.util.List;
 

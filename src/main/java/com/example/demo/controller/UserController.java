@@ -3,10 +3,8 @@ package com.example.demo.controller;
 import com.example.demo.domain.entity.User;
 import com.example.demo.domain.model.UserPatch;
 import com.example.demo.exception.AgeValidationException;
-import com.example.demo.exception.UserNotFoundException;
 import com.example.demo.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -66,13 +64,8 @@ public class UserController {
         return userService.updatePartialUser(userPatch);
     }
 
-    @ExceptionHandler(ValidationException.class)
+    @ExceptionHandler({ValidationException.class, AgeValidationException.class})
     public void badRequest(HttpServletResponse httpServletResponse) throws IOException {
         httpServletResponse.sendError(HttpStatus.BAD_REQUEST.value());
-    }
-
-    @ExceptionHandler(AgeValidationException.class)
-    public void tooYoungForAccountCreation(HttpServletResponse httpServletResponse) throws IOException {
-        httpServletResponse.sendError(HttpStatus.TOO_EARLY.value());
     }
 }
