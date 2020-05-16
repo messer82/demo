@@ -7,11 +7,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 
@@ -40,21 +41,21 @@ public class TransactionControllerTest {
     public void test_get_transactions() {
         transactionController.getTransactions();
 
-        Mockito.verify(transactionService).getAllTransactions();
+        verify(transactionService).getAllTransactions();
     }
 
     @Test
     public void test_get_transactions_by_account_id() {
-        transactionController.getTransactionsByAccountId(Mockito.anyInt());
+        transactionController.getTransactionsByAccountId(anyInt());
 
-        Mockito.verify(transactionService).getTransactionsByAccount(Mockito.anyInt());
+        verify(transactionService).getTransactionsByAccount(anyInt());
     }
 
     @Test
     public void test_get_transaction_by_id() {
-        transactionController.getTransactionById(Mockito.anyInt());
+        transactionController.getTransactionById(anyInt());
 
-        Mockito.verify(transactionService).getTransactionById(Mockito.anyInt());
+        verify(transactionService).getTransactionById(anyInt());
     }
 
     @Test
@@ -70,13 +71,13 @@ public class TransactionControllerTest {
 
         transactionController.makeTransaction(transaction);
 
-        Mockito.verify(transactionService).createTransaction(Mockito.eq(transaction));
+        verify(transactionService).createTransaction(eq(transaction));
     }
 
     @Test
     public void test_delete_transaction_by_id() {
-        transactionController.deleteTransactionById(Mockito.anyInt());
+        transactionController.deleteTransactionById(anyInt());
 
-        Mockito.verify(transactionService).deleteTransactionById(Mockito.anyInt());
+        verify(transactionService).deleteTransactionById(anyInt());
     }
 }

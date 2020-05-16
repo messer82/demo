@@ -8,10 +8,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.time.LocalDate;
+
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 
@@ -40,7 +42,7 @@ public class UserControllerTest {
     public void test_get_users() {
         userController.getUsers();
 
-        Mockito.verify(userService).getUsers();
+        verify(userService).getUsers();
     }
 
     @Test
@@ -56,7 +58,7 @@ public class UserControllerTest {
 
         userController.createUser(user);
 
-        Mockito.verify(userService).createUser(Mockito.eq(user));
+        verify(userService).createUser(eq(user));
     }
 
     @Test
@@ -65,28 +67,28 @@ public class UserControllerTest {
 
         userController.deleteUser(userId);
 
-        Mockito.verify(userService).deleteUserById(Mockito.eq(userId));
+        verify(userService).deleteUserById(eq(userId));
     }
 
     @Test
     public void test_get_user_by_id() {
-        userController.getUserById(Mockito.anyInt());
+        userController.getUserById(anyInt());
 
-        Mockito.verify(userService).getUserById(Mockito.anyInt());
+        verify(userService).getUserById(anyInt());
     }
 
     @Test
     public void test_get_user_by_name() {
-        userController.getUserByName(Mockito.anyString());
+        userController.getUserByName(anyString());
 
-        Mockito.verify(userService).getUserByName(Mockito.anyString());
+        verify(userService).getUserByName(anyString());
     }
 
     @Test
     public void test_get_users_named_like() {
-        userController.getUsersNamedLike(Mockito.anyString());
+        userController.getUsersNamedLike(anyString());
 
-        Mockito.verify(userService).getUsersNamed(Mockito.anyString());
+        verify(userService).getUsersNamed(anyString());
     }
 
     @Test
@@ -108,6 +110,6 @@ public class UserControllerTest {
 
         userController.updateUser(user.getUserId(), userPatch);
 
-        Mockito.verify(userService).updatePartialUser(Mockito.eq(userPatch));
+        verify(userService).updatePartialUser(eq(userPatch));
     }
 }

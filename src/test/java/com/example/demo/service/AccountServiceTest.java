@@ -11,13 +11,18 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.dao.EmptyResultDataAccessException;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 
@@ -54,7 +59,7 @@ public class AccountServiceTest {
     }
 
     @Test
-    public void test_delete_account_by_id(){
+    public void test_delete_account_by_id() {
         account1 = Account.
                 builder().
                 accountId(1).
@@ -62,51 +67,69 @@ public class AccountServiceTest {
                 accountNumber("RO454545").
                 balance(BigDecimal.valueOf(1234)).build();
 
-        Mockito.when(accountRepository.findById(account1.getAccountId())).
+        when(accountRepository.findById(account1.getAccountId())).
                 thenReturn(account1).
                 thenThrow(AccountNotFoundException.class);
 
         accountService.deleteAccountById(account1.getAccountId());
 
-        Mockito.verify(accountRepository).deleteById(Mockito.eq(account1.getAccountId()));
+        verify(accountRepository).deleteById(eq(account1.getAccountId()));
     }
 
     @Test
     public void test_get_accounts() {
 
-        Mockito.when(accountRepository.findAll()).
+        when(accountRepository.findAll()).
                 thenReturn(accounts).
                 thenThrow(AccountNotFoundException.class);
 
         List<Account> result = accountService.getAccounts();
 
-        Assertions.assertThat(result.size()).isEqualTo(2);
-        Assertions.assertThat(result.get(0)).isEqualToComparingFieldByField(account1);
-        Assertions.assertThat(result.get(1)).isEqualToComparingFieldByField(account2);
+        assertThat(result.size()).isEqualTo(2);
+        assertThat(result.get(0)).isEqualToComparingFieldByField(account1);
+        assertThat(result.get(1)).isEqualToComparingFieldByField(account2);
 
-        Mockito.verify(accountRepository).findAll();
+        verify(accountRepository).findAll();
+    }
+
+    @Test
+    public void given_exception_when_getting_account_by_id_then_account_not_found_exception_is_thrown() {
+        int accountId = 15;
+
+        account1 = Account.builder()
+                .accountId(1)
+                .userId(5)
+                .accountNumber("RO454545")
+                .balance(BigDecimal.valueOf(1234))
+                .build();
+
+        when(accountRepository.findById(anyInt())).thenThrow(EmptyResultDataAccessException.class);
+
+        Throwable throwable = Assertions.catchThrowable(() -> accountService.getAccountById(accountId));
+
+        assertThat(throwable).isInstanceOf(AccountNotFoundException.class);
+        assertThat(throwable.getMessage()).isEqualTo("No account for this account id!");
     }
 
     @Test
     public void test_get_account_by_id() {
         int accountId = 15;
 
-        account1 = Account.
-                builder().
-                accountId(1).
-                userId(5).
-                accountNumber("RO454545").
-                balance(BigDecimal.valueOf(1234)).build();
+        account1 = Account.builder()
+                .accountId(1)
+                .userId(5)
+                .accountNumber("RO454545")
+                .balance(BigDecimal.valueOf(1234))
+                .build();
 
-        Mockito.when(accountRepository.findById(ArgumentMatchers.anyInt())).
-                thenReturn(account1).
-                thenThrow(AccountNotFoundException.class);
+        when(accountRepository.findById(anyInt())).
+                thenReturn(account1);
 
         Account actualResult = accountService.getAccountById(accountId);
 
-        Assertions.assertThat(actualResult).isEqualToComparingFieldByField(account1);
+        assertThat(actualResult).isEqualToComparingFieldByField(account1);
 
-        Mockito.verify(accountRepository).findById(Mockito.eq(accountId));
+        verify(accountRepository).findById(eq(accountId));
     }
 
     @Test
@@ -120,15 +143,15 @@ public class AccountServiceTest {
                 accountNumber("RO454545").
                 balance(BigDecimal.valueOf(1234)).build();
 
-        Mockito.when(accountRepository.findByAccountNumber(ArgumentMatchers.anyString())).
+        when(accountRepository.findByAccountNumber(anyString())).
                 thenReturn(account1).
                 thenThrow(AccountNotFoundException.class);
 
         Account result = accountService.getAccountByAccountNumber(accountNumber);
 
-        Assertions.assertThat(result).isEqualToComparingFieldByField(account1);
+        assertThat(result).isEqualToComparingFieldByField(account1);
 
-        Mockito.verify(accountRepository).findByAccountNumber(Mockito.eq(accountNumber));
+        verify(accountRepository).findByAccountNumber(eq(accountNumber));
     }
 
     @Test
@@ -140,15 +163,15 @@ public class AccountServiceTest {
                 accountNumber("RO454545").
                 balance(BigDecimal.valueOf(1234)).build();
 
-        Mockito.when(accountRepository.save(ArgumentMatchers.any())).
+        when(accountRepository.save(ArgumentMatchers.any())).
                 thenReturn(account1).
                 thenThrow(SQLException.class);
 
         Account result = accountService.createAccount(account1);
 
-        Assertions.assertThat(result).isEqualToComparingFieldByField(account1);
+        assertThat(result).isEqualToComparingFieldByField(account1);
 
-        Mockito.verify(accountRepository).save(Mockito.eq(account1));
+        verify(accountRepository).save(eq(account1));
     }
 
     @Test
@@ -157,7 +180,7 @@ public class AccountServiceTest {
 
         accountService.updateAccountBalance(accountPatch);
 
-        Mockito.verify(accountRepository).updateAccount(Mockito.anyInt(), Mockito.any());
+        verify(accountRepository).updateAccount(anyInt(), any());
     }
 
 }

@@ -1,13 +1,11 @@
 package com.example.demo.repository;
 
 import com.example.demo.domain.entity.Transaction;
-import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -16,6 +14,11 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 
@@ -56,14 +59,14 @@ public class TransactionRepositoryImplTest {
 
     @Test
     public void test_find_all() {
-        Mockito.when(jdbcTemplate.query(Mockito.anyString(), Mockito.any(RowMapper.class))).
+        when(jdbcTemplate.query(anyString(), any(RowMapper.class))).
                 thenReturn(transactions);
 
         List<Transaction> result = transactionRepository.findAll();
 
-        Assertions.assertThat(result.size()).isEqualTo(2);
-        Assertions.assertThat(result.get(0)).isEqualToComparingFieldByField(transaction1);
-        Assertions.assertThat(result.get(1)).isEqualToComparingFieldByField(transaction2);
+        assertThat(result.size()).isEqualTo(2);
+        assertThat(result.get(0)).isEqualToComparingFieldByField(transaction1);
+        assertThat(result.get(1)).isEqualToComparingFieldByField(transaction2);
     }
 
     @Test
@@ -71,8 +74,8 @@ public class TransactionRepositoryImplTest {
 
         transactionRepository.findByAccountId(transaction1.getAccountId());
 
-        Mockito.verify(jdbcTemplate).
-                query(Mockito.anyString(), Mockito.any(RowMapper.class), Mockito.eq(transaction1.getAccountId()));
+        verify(jdbcTemplate).
+                query(anyString(), any(RowMapper.class), eq(transaction1.getAccountId()));
     }
 
     @Test
@@ -80,13 +83,13 @@ public class TransactionRepositoryImplTest {
 
         transactionRepository.findById(transaction1.getAccountId());
 
-        Mockito.verify(jdbcTemplate).
-                queryForObject(Mockito.anyString(), Mockito.any(RowMapper.class), Mockito.eq(transaction1.getAccountId()));
+        verify(jdbcTemplate).
+                queryForObject(anyString(), any(RowMapper.class), eq(transaction1.getAccountId()));
     }
 
     @Test
     public void test_save() {
-        Mockito.when(jdbcTemplate.query(Mockito.anyString(), Mockito.any(RowMapper.class))).
+        when(jdbcTemplate.query(anyString(), any(RowMapper.class))).
                 thenReturn(transactions);
 
         transaction1 = Transaction.
@@ -100,10 +103,9 @@ public class TransactionRepositoryImplTest {
 
         Transaction response = transactionRepository.save(transaction1);
 
-        Mockito.verify(jdbcTemplate).
-                update(Mockito.anyString(), Mockito.anyInt(), Mockito.anyString(), Mockito.any());
+        verify(jdbcTemplate).update(anyString(), anyInt(), anyString(), any());
 
-        Assertions.assertThat(response).isEqualToComparingFieldByField(transaction2);
+        assertThat(response).isEqualToComparingFieldByField(transaction2);
     }
 
     @Test
@@ -111,6 +113,6 @@ public class TransactionRepositoryImplTest {
 
         transactionRepository.deleteById(transaction1.getTransactionId());
 
-        Mockito.verify(jdbcTemplate).update(Mockito.anyString(), Mockito.eq(transaction1.getTransactionId()));
+        verify(jdbcTemplate).update(anyString(), eq(transaction1.getTransactionId()));
     }
 }

@@ -8,11 +8,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
+
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 
@@ -37,30 +39,30 @@ public class AccountControllerTest {
 
     @Test
     public void test_delete_account_by_id() {
-        accountController.deleteAccountById(Mockito.anyInt());
+        accountController.deleteAccountById(anyInt());
 
-        Mockito.verify(accountService).deleteAccountById(Mockito.anyInt());
+        verify(accountService).deleteAccountById(anyInt());
     }
 
     @Test
     public void test_get_accounts() {
         accountController.getAccounts();
 
-        Mockito.verify(accountService).getAccounts();
+        verify(accountService).getAccounts();
     }
 
     @Test
     public void test_get_account_by_id() {
-        accountController.getAccountById(Mockito.anyInt());
+        accountController.getAccountById(anyInt());
 
-        Mockito.verify(accountService).getAccountById(Mockito.anyInt());
+        verify(accountService).getAccountById(anyInt());
     }
 
     @Test
     public void test_get_account_by_account_number() {
-        accountController.getAccountByAccountNumber(Mockito.anyString());
+        accountController.getAccountByAccountNumber(anyString());
 
-        Mockito.verify(accountService).getAccountByAccountNumber(Mockito.anyString());
+        verify(accountService).getAccountByAccountNumber(anyString());
     }
 
     @Test
@@ -74,7 +76,7 @@ public class AccountControllerTest {
 
         accountController.createAccount(account);
 
-        Mockito.verify(accountService).createAccount(Mockito.eq(account));
+        verify(accountService).createAccount(eq(account));
     }
 
     @Test
@@ -90,6 +92,6 @@ public class AccountControllerTest {
 
         accountController.updateAccount(account.getAccountId(), accountPatch);
 
-        Mockito.verify(accountService).updateAccountBalance(accountPatch);
+        verify(accountService).updateAccountBalance(accountPatch);
     }
 }
