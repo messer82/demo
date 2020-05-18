@@ -2,7 +2,9 @@ package com.example.demo.service;
 
 import com.example.demo.domain.entity.Account;
 import com.example.demo.domain.entity.Transaction;
+import com.example.demo.exception.AccountNotFoundException;
 import com.example.demo.exception.AmountTooLargeException;
+import com.example.demo.exception.BalanceTooLowException;
 import com.example.demo.exception.TransactionNotFoundException;
 import com.example.demo.repository.TransactionRepositoryImpl;
 import org.assertj.core.api.Assertions;
@@ -12,6 +14,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.dao.EmptyResultDataAccessException;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -88,6 +91,17 @@ public class TransactionServiceTest {
     }
 
     @Test
+    public void given_exception_when_get_all_transactions_then_transaction_not_found_exception_is_thrown() {
+
+        when(transactionRepository.findAll()).thenThrow(EmptyResultDataAccessException.class);
+
+        Throwable throwable = Assertions.catchThrowable(() -> transactionService.getAllTransactions());
+
+        assertThat(throwable).isInstanceOf(TransactionNotFoundException.class);
+        assertThat(throwable.getMessage()).isEqualTo("No transactions available!");
+    }
+
+    @Test
     public void test_get_transactions_by_account() {
         int accountId = 10;
 
@@ -100,6 +114,18 @@ public class TransactionServiceTest {
         assertThat(result.size()).isEqualTo(transactions.size());
 
         verify(transactionRepository).findByAccountId(eq(accountId));
+    }
+
+    @Test
+    public void given_exception_when_get_transactions_by_account_then_transaction_not_found_exception_is_thrown() {
+        int accountId = 4;
+
+        when(transactionRepository.findByAccountId(anyInt())).thenThrow(EmptyResultDataAccessException.class);
+
+        Throwable throwable = Assertions.catchThrowable(() -> transactionService.getTransactionsByAccount(accountId));
+
+        assertThat(throwable).isInstanceOf(TransactionNotFoundException.class);
+        assertThat(throwable.getMessage()).isEqualTo("No transactions found for this account id!");
     }
 
     @Test
@@ -124,6 +150,44 @@ public class TransactionServiceTest {
         assertThat(result).isEqualToComparingFieldByField(transaction1);
 
         verify(transactionRepository).findById(eq(transactionId));
+    }
+
+    @Test
+    public void given_exception_when_get_transaction_by_id_then_transaction_not_found_exception_is_thrown() {
+        int transactionId = 6;
+
+        when(transactionRepository.findById(anyInt())).thenThrow(EmptyResultDataAccessException.class);
+
+        Throwable throwable = Assertions.catchThrowable(() -> transactionService.getTransactionById(transactionId));
+
+        assertThat(throwable).isInstanceOf(TransactionNotFoundException.class);
+        assertThat(throwable.getMessage()).isEqualTo("No transactions found for this transaction id!");
+    }
+
+    @Test
+    public void test_create_transaction() {
+
+        account1 = Account.
+                builder().
+                accountId(1).
+                userId(5).
+                accountNumber("RO454545").
+                balance(BigDecimal.valueOf(1234)).build();
+
+        transaction1 = Transaction.
+                builder().
+                transactionId(1).
+                accountId(2).
+                destinationAccount("RO78955").
+                amount(BigDecimal.valueOf(445)).
+                transactionDate(LocalDateTime.parse("2020-01-02T09:10:10")).
+                build();
+
+        when(accountService.getAccountById(transaction1.getAccountId())).thenReturn(account1);
+
+        transactionService.createTransaction(transaction1);
+
+        verify(transactionRepository).save(eq(transaction1));
     }
 
     @Test
@@ -194,30 +258,66 @@ public class TransactionServiceTest {
         assertThat(actualTransaction).isEqualToComparingFieldByField(transactionResult);
     }
 
+//    @Test
+//    public void given_exception_when_destination_account_is_not_from_the_same_bank_then_account_not_found_exception_is_thrown() {
+//        account1 = Account.builder()
+//                .accountId(1)
+//                .userId(5)
+//                .accountNumber("RO454545")
+//                .balance(BigDecimal.valueOf(1234))
+//                .build();
+//
+//        transaction1 = Transaction.builder()
+//                .accountId(1)
+//                .destinationAccount("RO565656")
+//                .amount(BigDecimal.valueOf(445))
+//                .transactionDate(LocalDateTime.parse("2020-01-02T09:10:10"))
+//                .build();
+//
+//        Transaction transactionResult = transaction1 = Transaction.builder()
+//                .accountId(1)
+//                .destinationAccount("RO565656")
+//                .amount(BigDecimal.valueOf(445))
+//                .transactionDate(LocalDateTime.parse("2020-01-02T09:10:10"))
+//                .build();
+//
+//        when(accountService.getAccountById(transaction1.getAccountId())).thenReturn(account1);
+//        when(accountService.getAccountByAccountNumber(transaction1.getDestinationAccount())).thenThrow(AccountNotFoundException.class);
+//        when(transactionRepository.save(transaction1)).thenReturn(transactionResult);
+//
+//        Transaction actualTransaction = transactionService.createTransaction(transaction1);
+//
+//        verify(accountService).updateAccountBalance(any());
+//
+//        Throwable throwable = Assertions.catchThrowable(() -> transactionService.createTransaction(transaction1));
+//
+//        assertThat(actualTransaction).isEqualToComparingFieldByField(transactionResult);
+//        assertThat(throwable).isInstanceOf(AccountNotFoundException.class);
+//    }
+
     @Test
-    public void test_create_transaction() {
+    public void given_exception_when_create_transaction_then_Balance_too_low_exception_is_thrown() {
 
-        account1 = Account.
-                builder().
-                accountId(1).
-                userId(5).
-                accountNumber("RO454545").
-                balance(BigDecimal.valueOf(1234)).build();
+        transaction1 = Transaction.builder()
+                .accountId(1)
+                .destinationAccount("RO565656")
+                .amount(BigDecimal.valueOf(1500))
+                .transactionDate(LocalDateTime.parse("2020-01-02T09:10:10"))
+                .build();
 
-        transaction1 = Transaction.
-                builder().
-                transactionId(1).
-                accountId(2).
-                destinationAccount("RO78955").
-                amount(BigDecimal.valueOf(445)).
-                transactionDate(LocalDateTime.parse("2020-01-02T09:10:10")).
-                build();
+        account1 = Account.builder()
+                .accountId(1)
+                .userId(5)
+                .accountNumber("RO454545")
+                .balance(BigDecimal.valueOf(1234))
+                .build();
 
         when(accountService.getAccountById(transaction1.getAccountId())).thenReturn(account1);
 
-        transactionService.createTransaction(transaction1);
+        Throwable throwable = Assertions.catchThrowable(() -> transactionService.createTransaction(transaction1));
 
-        verify(transactionRepository).save(eq(transaction1));
+        assertThat(throwable).isInstanceOf(BalanceTooLowException.class);
+        assertThat(throwable.getMessage()).isEqualTo("Insufficient funds!");
     }
 
     @Test
@@ -238,5 +338,16 @@ public class TransactionServiceTest {
         transactionService.deleteTransactionById(transaction1.getTransactionId());
 
         verify(transactionRepository).deleteById(eq(transaction1.getTransactionId()));
+    }
+
+    @Test
+    public void given_exception_when_delete_transaction_by_id_then_transaction_not_found_exception_is_thrown() {
+        int transactionId = 5;
+
+        when(transactionRepository.findById(anyInt())).thenThrow(EmptyResultDataAccessException.class);
+
+        Throwable throwable = Assertions.catchThrowable(() -> transactionService.deleteTransactionById(transactionId));
+
+        assertThat(throwable).isInstanceOf(TransactionNotFoundException.class);
     }
 }

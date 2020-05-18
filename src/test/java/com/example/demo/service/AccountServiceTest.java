@@ -77,6 +77,18 @@ public class AccountServiceTest {
     }
 
     @Test
+    public void given_exception_when_delete_account_by_id_account_then_not_found_exception_is_thrown() {
+        int accountId = 5;
+
+        when(accountRepository.findById(anyInt())).thenThrow(EmptyResultDataAccessException.class);
+
+        Throwable throwable = Assertions.catchThrowable(() -> accountService.deleteAccountById(accountId));
+
+        assertThat(throwable).isInstanceOf(AccountNotFoundException.class);
+        assertThat(throwable.getMessage()).isEqualTo("No account for this account id!");
+    }
+
+    @Test
     public void test_get_accounts() {
 
         when(accountRepository.findAll()).
@@ -93,22 +105,13 @@ public class AccountServiceTest {
     }
 
     @Test
-    public void given_exception_when_getting_account_by_id_then_account_not_found_exception_is_thrown() {
-        int accountId = 15;
+    public void given_exception_when_get_accounts_then_account_not_found_exception_is_thrown() {
+        when(accountRepository.findAll()).thenThrow(EmptyResultDataAccessException.class);
 
-        account1 = Account.builder()
-                .accountId(1)
-                .userId(5)
-                .accountNumber("RO454545")
-                .balance(BigDecimal.valueOf(1234))
-                .build();
-
-        when(accountRepository.findById(anyInt())).thenThrow(EmptyResultDataAccessException.class);
-
-        Throwable throwable = Assertions.catchThrowable(() -> accountService.getAccountById(accountId));
+        Throwable throwable = Assertions.catchThrowable(() -> accountService.getAccounts());
 
         assertThat(throwable).isInstanceOf(AccountNotFoundException.class);
-        assertThat(throwable.getMessage()).isEqualTo("No account for this account id!");
+        assertThat(throwable.getMessage()).isEqualTo("No accounts available!");
     }
 
     @Test
@@ -133,6 +136,25 @@ public class AccountServiceTest {
     }
 
     @Test
+    public void given_exception_when_getting_account_by_id_then_account_not_found_exception_is_thrown() {
+        int accountId = 15;
+
+        account1 = Account.builder()
+                .accountId(1)
+                .userId(5)
+                .accountNumber("RO454545")
+                .balance(BigDecimal.valueOf(1234))
+                .build();
+
+        when(accountRepository.findById(anyInt())).thenThrow(EmptyResultDataAccessException.class);
+
+        Throwable throwable = Assertions.catchThrowable(() -> accountService.getAccountById(accountId));
+
+        assertThat(throwable).isInstanceOf(AccountNotFoundException.class);
+        assertThat(throwable.getMessage()).isEqualTo("No account for this account id!");
+    }
+
+    @Test
     public void test_get_account_by_account_number() {
         String accountNumber = "RO6598";
 
@@ -152,6 +174,18 @@ public class AccountServiceTest {
         assertThat(result).isEqualToComparingFieldByField(account1);
 
         verify(accountRepository).findByAccountNumber(eq(accountNumber));
+    }
+
+    @Test
+    public void given_exception_when_get_account_by_account_number_then_account_not_found_exception_is_thrown( ){
+        String accountNumber = "RO45454";
+
+        when(accountRepository.findByAccountNumber(anyString())).thenThrow(EmptyResultDataAccessException.class);
+
+        Throwable throwable = Assertions.catchThrowable(() -> accountService.getAccountByAccountNumber(accountNumber));
+
+        assertThat(throwable).isInstanceOf(AccountNotFoundException.class);
+        assertThat(throwable.getMessage()).isEqualTo("There is no internal account for this account number!");
     }
 
     @Test
@@ -181,6 +215,18 @@ public class AccountServiceTest {
         accountService.updateAccountBalance(accountPatch);
 
         verify(accountRepository).updateAccount(anyInt(), any());
+    }
+
+    @Test
+    public void given_exception_when_update_account_balance_then_account_not_found_exception_is_thrown() {
+        AccountPatch accountPatch = AccountPatch.builder().accountId(5).balance(BigDecimal.valueOf(456)).build();
+
+        when(accountRepository.updateAccount(anyInt(), any())).thenThrow(EmptyResultDataAccessException.class);
+
+        Throwable throwable = Assertions.catchThrowable(() -> accountService.updateAccountBalance(accountPatch));
+
+        assertThat(throwable).isInstanceOf(AccountNotFoundException.class);
+        assertThat(throwable.getMessage()).isEqualTo("No valid account details for patch!");
     }
 
 }

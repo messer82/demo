@@ -58,25 +58,6 @@ public class UserServiceTest {
         users.add(user2);
     }
 
-//    @Test
-//    public void given_exception_when_create_user_then_age_validation_exception_is_thrown() {
-//        user1 = User.
-//                builder().
-//                userId(1).
-//                userName("John Doe").
-//                email("john.doe@gmail.com").
-//                birthDate(LocalDate.parse("2005-01-01")).
-//                build();
-//
-////        when(userRepository.save(any())).thenThrow(IllegalArgumentException.class);
-//        when(userRepository.save(any())).thenThrow(AgeValidationException.class);
-//
-//        Throwable throwable = Assertions.catchThrowable(() -> userService.createUser(user1));
-//
-//        assertThat(throwable).isInstanceOf(AgeValidationException.class);
-//        assertThat(throwable.getMessage()).isEqualTo("Below 18 years of age!");
-//    }
-
     @Test
     public void test_create_user() {
 
@@ -99,10 +80,21 @@ public class UserServiceTest {
         verify(userRepository).save(eq(user1));
     }
 
-//    @Test
-//    public void given_exception_when_delete_user_by_id_then_user_not_found_exception_is_thrown() {
-//        int userId = 5;
-//    }
+    @Test
+    public void given_exception_when_create_user_then_age_validation_exception_is_thrown() {
+        user1 = User.
+                builder().
+                userId(1).
+                userName("John Doe").
+                email("john.doe@gmail.com").
+                birthDate(LocalDate.parse("2005-01-01")).
+                build();
+
+        Throwable throwable = Assertions.catchThrowable(() -> userService.createUser(user1));
+
+        assertThat(throwable).isInstanceOf(AgeValidationException.class);
+        assertThat(throwable.getMessage()).isEqualTo("Below 18 years of age!");
+    }
 
     @Test
     public void test_delete_user_by_id() {
@@ -115,9 +107,7 @@ public class UserServiceTest {
                 birthDate(LocalDate.parse("2000-01-01")).
                 build();
 
-        when(userRepository.findById(user1.getUserId())).
-                thenReturn(user1).
-                thenThrow(UserNotFoundException.class);
+        when(userRepository.findById(user1.getUserId())).thenReturn(user1);
 
         userService.deleteUserById(user1.getUserId());
 
@@ -125,15 +115,14 @@ public class UserServiceTest {
     }
 
     @Test
-    public void given_exception_when_get_users_then_user_not_found_exception_is_thrown() {
-        List<User> result = userService.getUsers();
+    public void given_exception_when_delete_user_by_id_then_user_not_found_exception_is_thrown() {
+        int userId = 5;
 
-        when(userRepository.findAll()).thenThrow(EmptyResultDataAccessException.class);
+        when(userRepository.findById(anyInt())).thenThrow(EmptyResultDataAccessException.class);
 
-        Throwable throwable = Assertions.catchThrowable(() -> userService.getUsers());
+        Throwable throwable = Assertions.catchThrowable(() -> userService.deleteUserById(userId));
 
         assertThat(throwable).isInstanceOf(UserNotFoundException.class);
-        assertThat(throwable.getMessage()).isEqualTo("No users available!");
     }
 
     @Test
@@ -151,15 +140,14 @@ public class UserServiceTest {
     }
 
     @Test
-    public void given_exception_when_get_user_by_id_then_user_not_found_exception_is_thrown() {
-        int userId = 5;
+    public void given_exception_when_get_users_then_user_not_found_exception_is_thrown() {
 
-        when(userRepository.findById(anyInt())).thenThrow(EmptyResultDataAccessException.class);
+        when(userRepository.findAll()).thenThrow(EmptyResultDataAccessException.class);
 
-        Throwable throwable = Assertions.catchThrowable(() -> userService.getUserById(userId));
+        Throwable throwable = Assertions.catchThrowable(() -> userService.getUsers());
 
         assertThat(throwable).isInstanceOf(UserNotFoundException.class);
-        assertThat(throwable.getMessage()).isEqualTo("No user found for this Id!");
+        assertThat(throwable.getMessage()).isEqualTo("No users available!");
     }
 
     @Test
@@ -185,15 +173,15 @@ public class UserServiceTest {
     }
 
     @Test
-    public void given_exception_when_get_user_by_name_then_user_not_found_exception_is_thrown() {
-        String userName = "Ion";
+    public void given_exception_when_get_user_by_id_then_user_not_found_exception_is_thrown() {
+        int userId = 5;
 
-        when(userRepository.findByName(anyString())).thenThrow(EmptyResultDataAccessException.class);
+        when(userRepository.findById(anyInt())).thenThrow(EmptyResultDataAccessException.class);
 
-        Throwable throwable = Assertions.catchThrowable(() -> userService.getUserByName(userName));
+        Throwable throwable = Assertions.catchThrowable(() -> userService.getUserById(userId));
 
         assertThat(throwable).isInstanceOf(UserNotFoundException.class);
-        assertThat(throwable.getMessage()).isEqualTo("No user found for this user name!");
+        assertThat(throwable.getMessage()).isEqualTo("No user found for this Id!");
     }
 
     @Test
@@ -219,15 +207,15 @@ public class UserServiceTest {
     }
 
     @Test
-    public void given_exception_when_get_users_named_then_user_not_found_exception_is_thrown() {
-        String userName = "George";
+    public void given_exception_when_get_user_by_name_then_user_not_found_exception_is_thrown() {
+        String userName = "Ion";
 
-        when(userRepository.findUsersNamed(anyString())).thenThrow(EmptyResultDataAccessException.class);
+        when(userRepository.findByName(anyString())).thenThrow(EmptyResultDataAccessException.class);
 
-        Throwable throwable = Assertions.catchThrowable(() -> userService.getUsersNamed(userName));
+        Throwable throwable = Assertions.catchThrowable(() -> userService.getUserByName(userName));
 
         assertThat(throwable).isInstanceOf(UserNotFoundException.class);
-        assertThat(throwable.getMessage()).isEqualTo("No users found with relevance to this name!");
+        assertThat(throwable.getMessage()).isEqualTo("No user found for this user name!");
     }
 
     @Test
@@ -245,15 +233,15 @@ public class UserServiceTest {
     }
 
     @Test
-    public void given_exception_when_update_partial_user_then_user_not_found_exception_is_thrown() {
-        UserPatch userPatch = UserPatch.builder().userId(1).userName("John Doe").email("john.doe@gmail.com").build();
+    public void given_exception_when_get_users_named_then_user_not_found_exception_is_thrown() {
+        String userName = "George";
 
-        when(userRepository.updateUser(anyInt(), anyString(), anyString())).thenThrow(EmptyResultDataAccessException.class);
+        when(userRepository.findUsersNamed(anyString())).thenThrow(EmptyResultDataAccessException.class);
 
-        Throwable throwable = Assertions.catchThrowable(() -> userService.updatePartialUser(userPatch));
+        Throwable throwable = Assertions.catchThrowable(() -> userService.getUsersNamed(userName));
 
         assertThat(throwable).isInstanceOf(UserNotFoundException.class);
-        assertThat(throwable.getMessage()).isEqualTo("No valid user details for patch!");
+        assertThat(throwable.getMessage()).isEqualTo("No users found with relevance to this name!");
     }
 
     @Test
@@ -264,5 +252,17 @@ public class UserServiceTest {
         userService.updatePartialUser(userPatch);
 
         verify(userRepository).updateUser(anyInt(), anyString(), anyString());
+    }
+
+    @Test
+    public void given_exception_when_update_partial_user_then_user_not_found_exception_is_thrown() {
+        UserPatch userPatch = UserPatch.builder().userId(1).userName("John Doe").email("john.doe@gmail.com").build();
+
+        when(userRepository.updateUser(anyInt(), anyString(), anyString())).thenThrow(EmptyResultDataAccessException.class);
+
+        Throwable throwable = Assertions.catchThrowable(() -> userService.updatePartialUser(userPatch));
+
+        assertThat(throwable).isInstanceOf(UserNotFoundException.class);
+        assertThat(throwable.getMessage()).isEqualTo("No valid user details for patch!");
     }
 }
