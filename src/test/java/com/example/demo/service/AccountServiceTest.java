@@ -77,18 +77,6 @@ public class AccountServiceTest {
     }
 
     @Test
-    public void given_exception_when_delete_account_by_id_account_then_not_found_exception_is_thrown() {
-        int accountId = 5;
-
-        when(accountRepository.findById(anyInt())).thenThrow(EmptyResultDataAccessException.class);
-
-        Throwable throwable = Assertions.catchThrowable(() -> accountService.deleteAccountById(accountId));
-
-        assertThat(throwable).isInstanceOf(AccountNotFoundException.class);
-        assertThat(throwable.getMessage()).isEqualTo("No account for this account id!");
-    }
-
-    @Test
     public void test_get_accounts() {
 
         when(accountRepository.findAll()).

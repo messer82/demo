@@ -20,11 +20,10 @@ public class AccountService {
     private final AccountRepository accountRepository;
 
     public void deleteAccountById(int id) {
-        if (getAccountById(id).getAccountId() > 0) {
-            accountRepository.deleteById(id);
-        } else {
-            throw new AccountNotFoundException();
-        }
+//        check that account exists, else throw AccountNotFoundException
+        Account account = getAccountById(id);
+
+        accountRepository.deleteById(id);
     }
 
     public List<Account> getAccounts() {

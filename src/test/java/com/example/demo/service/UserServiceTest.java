@@ -115,17 +115,6 @@ public class UserServiceTest {
     }
 
     @Test
-    public void given_exception_when_delete_user_by_id_then_user_not_found_exception_is_thrown() {
-        int userId = 5;
-
-        when(userRepository.findById(anyInt())).thenThrow(EmptyResultDataAccessException.class);
-
-        Throwable throwable = Assertions.catchThrowable(() -> userService.deleteUserById(userId));
-
-        assertThat(throwable).isInstanceOf(UserNotFoundException.class);
-    }
-
-    @Test
     public void test_get_users() {
 
         when(userRepository.findAll()).thenReturn(users);

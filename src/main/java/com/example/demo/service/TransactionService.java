@@ -9,6 +9,7 @@ import com.example.demo.exception.BalanceTooLowException;
 import com.example.demo.exception.TransactionNotFoundException;
 import com.example.demo.repository.TransactionRepository;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,7 @@ import java.util.List;
 
 @AllArgsConstructor
 @Service
+@Slf4j
 
 public class TransactionService {
 
@@ -59,7 +61,7 @@ public class TransactionService {
                     try {
                         accountByAccountNumber = accountService.getAccountByAccountNumber(transaction.getDestinationAccount());
                     } catch (AccountNotFoundException exception) {
-                        exception.printStackTrace();
+                        log.error("Exception getting destination account by account number!", exception);
                     }
             if (accountService.getAccounts().contains(accountByAccountNumber)) {
                 accountService.updateAccountBalance(AccountPatch.builder().
@@ -86,10 +88,9 @@ public class TransactionService {
     }
 
     public void deleteTransactionById(int id) {
-        if (getTransactionById(id).getTransactionId() > 0) {
-            transactionRepository.deleteById(id);
-        } else {
-            throw new TransactionNotFoundException();
-        }
+//        check that transaction exists, else throw TransactionNotFoundException
+        Transaction transaction = getTransactionById(id);
+
+        transactionRepository.deleteById(id);
     }
 }

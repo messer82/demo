@@ -29,11 +29,11 @@ public class UserService {
     }
 
     public void deleteUserById(int id) {
-        if (getUserById(id).getUserId() > 0) {
-            userRepository.deleteById(id);
-        } else {
-            throw new UserNotFoundException();
-        }
+//        check that user exists, else throw UserNotFoundException
+        User user = getUserById(id);
+
+        userRepository.deleteById(id);
+
     }
 
     public List<User> getUsers() {
